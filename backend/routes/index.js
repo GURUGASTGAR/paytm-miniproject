@@ -5,4 +5,4 @@ const router = express.Router();
 router.use("./user", userRoute);
 router.use("./account", accountRoute);
 
-module.exports = route;
+module.exports = router;
