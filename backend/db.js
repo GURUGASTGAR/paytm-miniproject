@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
 const { number, string } = require("zod");
 
-mongoose.connect(
-  "mongodb+srv://gurugastgar:GuruMongo@gurug.1vhrkrq.mongodb.net/Paytmdemo"
-);
+mongoose.connect("");
 
 const UserSchema = new mongoose.Schema({
   username: {
@@ -13,7 +11,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
     minlength: 3,
-    maxlenght: 30,
+    maxlength: 30,
   },
   password: {
     type: String,
@@ -23,13 +21,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    maxlenght: 50,
+    maxlength: 50,
   },
   lastname: {
     type: String,
     requierd: true,
     trim: true,
-    maxlenght: 40,
+    maxlength: 40,
   },
 });
 const AccountSchema = new mongoose.Schema({

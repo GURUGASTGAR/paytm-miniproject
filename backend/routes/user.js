@@ -3,7 +3,7 @@ const router = express.Router();
 const zod = require("zod");
 const { User, Account } = require("../db");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = require("../config");
+const { JWT_SECRET } = require("../config");
 const { authMiddleware } = require("../middleware");
 
 const signupSchema = zod.object({
@@ -35,7 +35,7 @@ router.post("/signup", async (req, res) => {
 
   const userID = dbUser._id;
 
-  Account.create({
+  await Account.create({
     userID,
     balance: 1 + Math.random() * 100000,
   });
@@ -89,8 +89,8 @@ router.put("/", authMiddleware, async (req, res) => {
       msg: "invalid inputs",
     });
   }
-  const user = User.updateOne(req.body, { _id: req.userID });
-
+  const user = await User.updateOne({ _id: req.userID }, { $set: req.body });
+  console.log(req.body);
   res.json({
     msg: "changes updated succesfully",
   });

@@ -5,13 +5,12 @@ const { JWT_SECRET } = require("./config");
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || authHeader.startsWith("Bearar ")) {
+  if (!authHeader || !authHeader.trim().startsWith("Bearer ")) {
     return res.status(411).json({
       msg: " invalid token",
     });
   }
-
-  const token = authHeader.split("");
+  const token = authHeader.split(" ");
   try {
     const decode = jwt.verify(token[1], JWT_SECRET);
     if (decode.userID) {
@@ -23,6 +22,7 @@ function authMiddleware(req, res, next) {
       });
     }
   } catch (e) {
+    console.log(e);
     res.status(403).json({
       msg: "invalid token",
     });
