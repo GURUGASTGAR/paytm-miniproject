@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 
 export const SendMoney = () => {
@@ -8,9 +8,10 @@ export const SendMoney = () => {
     const [searchParams] = useSearchParams();
     const id = searchParams.get("id");
     const name = searchParams.get("name");
-
+  const navigate = useNavigate();
     const [amount,setAmount] = useState(0);
     async function handleclick(){
+       
        
         try{
             
@@ -21,6 +22,7 @@ export const SendMoney = () => {
 
         console.log(response.data)
         alert(response.data.msg)
+        navigate("/dashboard")
         }catch(error){
         if(error.response){
            const invalid = error.response;

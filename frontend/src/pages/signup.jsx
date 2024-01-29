@@ -35,7 +35,7 @@ export function Signup(){
         localStorage.setItem("Email",username)
         localStorage.setItem('token',response.data.token);
         console.log(response.status)
-        navigate("/dashboard");
+        navigate("/signin");
       }
       catch(error){
         if (error.response && error.response.data) {
