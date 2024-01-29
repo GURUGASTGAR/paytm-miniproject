@@ -18,13 +18,13 @@ function authMiddleware(req, res, next) {
       next();
     } else {
       return res.status(403).json({
-        msg: "invalid",
+        error: "invalid token/user",
       });
     }
   } catch (e) {
     console.log(e);
     res.status(403).json({
-      msg: "invalid token",
+      error: "invalid token",
     });
   }
 }

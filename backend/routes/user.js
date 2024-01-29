@@ -15,37 +15,41 @@ const signupSchema = zod.object({
 
 router.post("/signup", async (req, res) => {
   //   const body = req.body;
-  const { success } = signupSchema.safeParse(req.body); // we can also do const success = signupSchema.safeparse(req.body).success
-  const person = await User.findOne({
-    username: req.body.username,
-  });
-  if (!success) {
-    return res.status(411).json({
-      msg: "incorrect-input",
+  try {
+    const { success } = signupSchema.safeParse(req.body); // we can also do const success = signupSchema.safeparse(req.body).success
+    const person = await User.findOne({
+      username: req.body.username,
     });
-  }
+    if (!success) {
+      return res.status(411).json({
+        msg: "incorrect-input",
+      });
+    }
 
-  if (person) {
-    return res.status(411).json({
-      msg: "user already exists",
+    if (person) {
+      return res.status(411).json({
+        msg: "user already exists",
+      });
+    }
+
+    const dbUser = await User.create(req.body);
+
+    const userID = dbUser._id;
+
+    await Account.create({
+      userID,
+      balance: 1 + Math.random() * 100000,
     });
+
+    const token = jwt.sign({ userID }, JWT_SECRET);
+
+    res.status(200).json({
+      msg: "user created Succesfully",
+      token: token,
+    });
+  } catch (e) {
+    console.log(e);
   }
-
-  const dbUser = await User.create(req.body);
-
-  const userID = dbUser._id;
-
-  await Account.create({
-    userID,
-    balance: 1 + Math.random() * 100000,
-  });
-
-  const token = jwt.sign({ userID }, JWT_SECRET);
-
-  res.status(200).json({
-    msg: "user created Succesfully",
-    token: token,
-  });
 });
 
 const signinSchema = zod.object({
@@ -95,8 +99,9 @@ router.put("/", authMiddleware, async (req, res) => {
     msg: "changes updated succesfully",
   });
 });
-router.get("/bulk", async (req, res) => {
+router.get("/bulk", authMiddleware, async (req, res) => {
   const filter = req.query.filter || "";
+  const userId = req.userID;
   const users = await User.find({
     $or: [
       {
@@ -112,6 +117,7 @@ router.get("/bulk", async (req, res) => {
     ],
   });
   res.json({
+    userId: userId,
     user: users.map((user) => ({
       username: user.username,
       firstname: user.firstname,
