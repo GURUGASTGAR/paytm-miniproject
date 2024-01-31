@@ -3,13 +3,21 @@ import { AppBar } from "../components/AppBar";
 import { Balance } from "../components/Balance";
 import { Users } from "../components/Users";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 //import { response } from "express";
 
 
 export function Dashboard(){
   const [balance ,setBalance] = useState(0)
   const [uname, setUname]=useState("");
+  const navigate = useNavigate();
+
+ 
+
     useEffect(()=>{
+        if(!localStorage.getItem("token")){
+            navigate("/");
+          }
         axios.get("http://localhost:3000/api/v1/account/balance",{
             headers:{
                 Authorization:"Bearer " + localStorage.getItem("token")
